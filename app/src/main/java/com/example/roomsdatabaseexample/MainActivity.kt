@@ -7,6 +7,8 @@ import android.util.Log
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import android.support.v4.os.HandlerCompat.postDelayed
+import android.R.attr.name
+import android.widget.Toast
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,8 +38,14 @@ class MainActivity : AppCompatActivity() {
         }
         tv_showAll.setOnClickListener {
             var handler = Handler()
-            val r = Runnable { val userList = AppDatabase.getAppDatabase(this@MainActivity).userDao().getAll()
-                Log.d("Main Activity", "Rows Count: " + userList.size) }
+            val r = Runnable {
+                val userList = AppDatabase.getAppDatabase(this@MainActivity).userDao().getAll()
+                Log.d("Main Activity", "Rows Count: " + userList.size)
+                for (elem_ in userList) {
+                    tv_alldata.append(elem_.firstName + " " + elem_.lastName + " " + elem_.age + "\n\n");
+                    // System.out.println(elem_.firstName +" "+elem_.lastName+" "+elem_.age)
+                }
+            }
 
             handler.postDelayed(r, 1000)
 
@@ -60,6 +68,10 @@ class MainActivity : AppCompatActivity() {
         user.lastName = et_lastname.text.toString().trim()
         user.age = et_age.text.toString().trim()
         AppDatabase.getAppDatabase(this@MainActivity).userDao().insertAll(user);
+        Toast.makeText(this@MainActivity, "Data added", Toast.LENGTH_SHORT).show()
+        user.firstName = ""
+        user.lastName = ""
+        user.age = ""
     }
 
     override fun onDestroy() {
